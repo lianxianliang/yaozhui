@@ -1,0 +1,194 @@
+<template>
+  <el-container>
+    <el-header>番茄品质检测系统</el-header>
+    <el-container>
+      <el-aside width="50vw">
+        <el-row>
+          <el-col
+            :span="12"
+            class='upload'
+          >
+            <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img
+                v-if="imageUrl"
+                :src="imageUrl"
+                class="avatar"
+              >
+              <i
+                v-else
+                class="el-icon-plus avatar-uploader-icon"
+              ></i>
+            </el-upload>
+          </el-col>
+          <el-col
+            :span="12"
+            class='upload'
+          >
+            <img
+              src="http://www.pptok.com/wp-content/uploads/2012/08/xunguang-4.jpg"
+              alt="处理后的图片"
+              class="dealImg"
+            >
+          </el-col>
+        </el-row>
+
+      </el-aside>
+      <el-main>
+        <el-header>图像预处理方法</el-header>
+        <el-row>
+          <el-col :span="12">
+            <div class="grid-content bg-purple">
+              <el-card class="box-card">
+                <div
+                  slot="header"
+                  class="clearfix"
+                >
+                  <span>滤波</span>
+                </div>
+                <div class='btn'>
+                  <el-button>中值滤波</el-button>
+                </div>
+                <div class='btn'>
+                  <el-button>均值滤波</el-button>
+                </div>
+                <div class='btn'>
+                  <el-button>高斯滤波</el-button>
+                </div>
+              </el-card>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content bg-purple-light">
+              <el-button>直方图均衡化</el-button>
+            </div>
+          </el-col>
+        </el-row>
+      </el-main>
+    </el-container>
+  </el-container>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      imageUrl: ''
+    };
+  },
+  methods: {
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    handleClick(path) {
+      this.$router.push({
+        path
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.el-container {
+  height: 100vh;
+}
+.el-header {
+  background-color: #b3c0d1;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+}
+.upload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.el-aside {
+  color: #333;
+  text-align: center;
+  padding: 10px;
+}
+
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+  text-align: center;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+
+.el-row {
+  height: 100%;
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.el-col {
+  border-radius: 4px;
+  cursor: pointer;
+}
+.bg-purple-dark {
+  background: #99a9bf;
+}
+.bg-purple {
+  background: #d3dce6;
+}
+.bg-purple-light {
+  background: #e5e9f2;
+}
+.grid-content {
+  border-radius: 4px;
+  min-height: 36px;
+}
+.row-bg {
+  padding: 10px 0;
+  background-color: #f9fafc;
+}
+.dealImg {
+  width: 100%;
+}
+.btn {
+  margin-bottom: 12px;
+}
+</style>
