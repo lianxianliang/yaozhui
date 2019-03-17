@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { login } from '@/api/user';
+
 export default {
   data() {
     var checkAge = (rule, value, callback) => {
@@ -79,8 +81,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$router.push({
-            path: '/index'
+          let params = {
+            username: this.ruleForm2.username,
+            password: this.ruleForm2.pass
+          }
+          login(params).then(res => {
+            console.warn('xxxxxxxxxxxxre', res);
+            if (res.message === '登录成功') {
+              this.$router.push({
+                path: '/index'
+              })
+            }
           })
         } else {
           console.log('error submit!!');

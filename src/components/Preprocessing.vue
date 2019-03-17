@@ -10,7 +10,7 @@
           >
             <el-upload
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="http://120.79.36.58:80/upload"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
@@ -52,7 +52,7 @@
                   <span>滤波</span>
                 </div>
                 <div class='btn'>
-                  <el-button>中值滤波</el-button>
+                  <el-button @click="handleClick('mediaimage')">中值滤波</el-button>
                 </div>
                 <div class='btn'>
                   <el-button>均值滤波</el-button>
@@ -75,10 +75,12 @@
 </template>
 
 <script>
+import { preprocessing } from '@/api/user';
 export default {
   data() {
     return {
-      imageUrl: ''
+      imageUrl: '',
+      fileName: '00077256-488e-11e9-a73e-00163e047e36.jpg'
     };
   },
   methods: {
@@ -98,8 +100,11 @@ export default {
       return isJPG && isLt2M;
     },
     handleClick(path) {
-      this.$router.push({
-        path
+      let params = {
+        filename: this.fileName
+      }
+      preprocessing(path, params).then(res => {
+        console.warn('xxxxxxxxxxxxre', res);
       })
     }
   }
