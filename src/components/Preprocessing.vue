@@ -1,76 +1,130 @@
 <template>
   <el-container>
-    <el-header>番茄品质检测系统</el-header>
-    <el-container>
-      <el-aside width="50vw">
-        <el-row>
-          <el-col
-            :span="12"
-            class='upload'
-          >
-            <el-upload
-              class="avatar-uploader"
-              action="http://120.79.36.58:80/upload"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img
-                v-if="imageUrl"
-                :src="imageUrl"
-                class="avatar"
-              >
-              <i
-                v-else
-                class="el-icon-plus avatar-uploader-icon"
-              ></i>
-            </el-upload>
-          </el-col>
-          <el-col
-            :span="12"
-            class='upload'
+    <el-aside width="50vw">
+      <el-row>
+        <el-col
+          :span="12"
+          class='upload'
+        >
+          <el-upload
+            class="avatar-uploader"
+            action="http://120.79.36.58:80/upload"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
           >
             <img
-              src="http://www.pptok.com/wp-content/uploads/2012/08/xunguang-4.jpg"
-              alt="处理后的图片"
-              class="dealImg"
+              v-if="imageUrl"
+              :src="imageUrl"
+              class="avatar"
             >
-          </el-col>
-        </el-row>
-
-      </el-aside>
-      <el-main>
-        <el-header>图像预处理方法</el-header>
-        <el-row>
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-card class="box-card">
-                <div
-                  slot="header"
-                  class="clearfix"
-                >
-                  <span>滤波</span>
-                </div>
-                <div class='btn'>
-                  <el-button @click="handleClick('mediaimage')">中值滤波</el-button>
-                </div>
-                <div class='btn'>
-                  <el-button>均值滤波</el-button>
-                </div>
-                <div class='btn'>
-                  <el-button>高斯滤波</el-button>
-                </div>
-              </el-card>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="grid-content bg-purple-light">
-              <el-button>直方图均衡化</el-button>
-            </div>
-          </el-col>
-        </el-row>
-      </el-main>
-    </el-container>
+            <i
+              v-else
+              class="el-icon-plus avatar-uploader-icon"
+            ></i>
+          </el-upload>
+        </el-col>
+        <el-col
+          :span="12"
+          class='upload'
+        >
+          <img
+            v-if="dealImgSrc"
+            :src="dealImgSrc"
+            alt="处理后的图片"
+            class="dealImg"
+          >
+        </el-col>
+      </el-row>
+    </el-aside>
+    <el-main>
+      <el-header>图像预处理方法</el-header>
+      <el-row
+        class="box1"
+        :gutter="20"
+      >
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <el-card class="box-card">
+              <div
+                slot="header"
+                class="clearfix"
+              >
+                <span>滤波</span>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('mediaimage')">中值滤波</el-button>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('avgimage')">均值滤波</el-button>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('gaussianimage')">高斯滤波</el-button>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <el-card class="box-card">
+              <div
+                slot="header"
+                class="clearfix"
+              >
+                <span>直方图</span>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('histequal')">直方图均衡化</el-button>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <el-card class="box-card">
+              <div
+                slot="header"
+                class="clearfix"
+              >
+                <span>灰度图</span>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('show_gray_image')">灰度图</el-button>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <el-card class="box-card">
+              <div
+                slot="header"
+                class="clearfix"
+              >
+                <span>分量</span>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('show_r_compontent')">R分量</el-button>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('show_g_compontent')">G分量</el-button>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('show_b_compontent')">B分量</el-button>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('show_h_compontent')">H分量</el-button>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('show_s_compontent')">S分量</el-button>
+              </div>
+              <div class='btn'>
+                <el-button @click="handleClick('show_v_compontent')">V分量</el-button>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+      </el-row>
+    </el-main>
   </el-container>
 </template>
 
@@ -80,11 +134,15 @@ export default {
   data() {
     return {
       imageUrl: '',
-      fileName: '00077256-488e-11e9-a73e-00163e047e36.jpg'
+      fileName: '',
+      dealImgSrc: '',
     };
   },
   methods: {
     handleAvatarSuccess(res, file) {
+      if (res.code === 200) {
+        this.fileName = res.message;
+      }
       this.imageUrl = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
@@ -105,6 +163,9 @@ export default {
       }
       preprocessing(path, params).then(res => {
         console.warn('xxxxxxxxxxxxre', res);
+        if (res.code === 200) {
+          this.dealImgSrc = res.message;
+        }
       })
     }
   }
@@ -113,7 +174,7 @@ export default {
 
 <style lang="scss" scoped>
 .el-container {
-  height: 100vh;
+  height: 100%;
 }
 .el-header {
   background-color: #b3c0d1;
@@ -131,6 +192,8 @@ export default {
   color: #333;
   text-align: center;
   padding: 10px;
+  background-color: #e9eef3;
+  margin-right: 10px;
 }
 
 .el-main {
@@ -138,14 +201,15 @@ export default {
   color: #333;
   text-align: center;
 }
-.avatar-uploader .el-upload {
+
+.avatar-uploader {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
-.avatar-uploader .el-upload:hover {
+.avatar-uploader:hover {
   border-color: #409eff;
 }
 .avatar-uploader-icon {
@@ -195,5 +259,10 @@ export default {
 }
 .btn {
   margin-bottom: 12px;
+}
+.box1 {
+  height: calc(100% - 60px);
+  padding: 12px 0;
+  box-sizing: border-box;
 }
 </style>

@@ -18,22 +18,24 @@ export default new Router({
     {
       path: '/index',
       name: 'Index',
-      component: Index
+      component: Index,
+      redirect: '/preprocessing',
+      children: [
+        {
+          path: '/preprocessing',
+          name: 'Preprocessing',
+          component: Preprocessing
+        },
+        {
+          path: '/analysis',
+          name: 'Analysis',
+          component: Analysis
+        },
+        {
+          path: '/check',
+          name: 'Check',
+          component: Check
+        }]
     },
-    {
-      path: '/preprocessing',
-      name: 'Preprocessing',
-      component: Preprocessing
-    },
-    {
-      path: '/analysis',
-      name: 'Analysis',
-      component: Analysis
-    },
-    {
-      path: '/check',
-      name: 'Check',
-      component: Check
-    }
   ]
 })
