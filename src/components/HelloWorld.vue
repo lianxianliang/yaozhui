@@ -101,7 +101,9 @@ export default {
     },
     handleClickRegister() {
       console.log('注册');
-
+      this.$router.push({
+        path: '/Register'
+      })
     }
   }
 }

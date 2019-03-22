@@ -12,14 +12,25 @@
                 <span>外部品质检测</span>
               </div>
               <el-row>
-                <!-- <el-button @click="handleClickTrain()">训练</el-button> -->
+                <el-button>训练</el-button>
                 <el-button
                   type="primary"
-                  @click="handleClickCheck('svmdetection')"
+                  @click="handleClickCheck('svmdetection','/usr/share/nginx/html/machine/image_deal/static/model/svmModel.m')"
                 >检测</el-button>
               </el-row>
             </el-card>
+
+            <img
+              v-if="objImg.svmdetection"
+              :src="objImg.svmdetection"
+              class="img"
+            >
+            <div
+              class="text"
+              v-if="objText.svmdetection"
+            >{{objText.svmdetection}}</div>
           </el-col>
+
           <el-col :span="12">
             <el-card class="box-card">
               <div
@@ -29,13 +40,23 @@
                 <span>番茄糖度检测</span>
               </div>
               <el-row>
-                <!-- <el-button @click="handleClickTrain()">训练</el-button> -->
+                <el-button>训练</el-button>
                 <el-button
                   type="primary"
-                  @click="handleClickCheck('bpdetection')"
+                  @click="handleClickCheck('bpdetection','/usr/share/nginx/html/machine/image_deal/static/model/bpModel.h5')"
                 >检测</el-button>
               </el-row>
             </el-card>
+
+            <img
+              v-if="objImg.bpdetection"
+              :src="objImg.bpdetection"
+              class="img"
+            >
+            <div
+              class="text"
+              v-if="objText.bpdetection"
+            >{{objText.bpdetection}}</div>
           </el-col>
         </el-row>
       </el-main>
@@ -120,10 +141,19 @@ export default {
       imageUrl: '',
       fileName: '',
       path: '',
+      model: '',
       start: true,
       fileList3: [],
       TrainDialogVisible: false,
       checkDialogVisible: false,
+      objImg: {
+        svmdetection: 'http://img.zcool.cn/community/016c6359ac1386a8012028a9fa6631.jpg@3000w_1l_2o_100sh.jpg',
+        bpdetection: ''
+      },
+      objText: {
+        svmdetection: '',
+        bpdetection: ''
+      },
     };
   },
   methods: {
@@ -132,6 +162,7 @@ export default {
         this.fileName = res.message;
       }
       this.imageUrl = URL.createObjectURL(file.raw);
+      this.objImg[this.path] = URL.createObjectURL(file.raw);
     },
     handleChange(file, fileList) {
       this.fileList3 = fileList.slice(-3);
@@ -140,24 +171,41 @@ export default {
       this.start = true;
       this.TrainDialogVisible = true;
     },
-    handleClickCheck(path) {
+    handleClickCheck(path, model) {
       // this.start = true;
       this.checkDialogVisible = true;
       this.path = path;
+      this.model = model;
     },
     handleClickStart() {
       // this.start = false;
+      let _this = this;
       this.checkDialogVisible = false;
       this.fileList3 = [];
       let params = {
         filename: this.fileName,
-        save_model: '/usr/share/nginx/html/machine/image_deal/static/model/svmModel.h5'
+        save_model: this.model
       }
       preprocessing(this.path, params).then(res => {
-        console.warn('xxxxxxxxxxxxre', res);
-        // if (res.code === 200) {
-        //   this.dealImgSrc = res.message;
-        // }
+        let text = '';
+        try {
+          switch (_this.path) {
+            case 'svmdetection':
+              text = res.message[0].res;
+              break;
+            case 'bpdetection':
+              text = res.message[0].result;
+              break;
+
+            default:
+              break;
+          }
+        } catch (error) {
+
+        }
+        _this.objText[_this.path] = text;
+        console.log(_this.objText);
+
       })
     }
   }
@@ -176,5 +224,15 @@ export default {
 .upload-demo {
   text-align: center;
   margin-bottom: 12px;
+}
+.img {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  width: 512px;
+}
+.text {
+  text-align: center;
+  line-height: 28px;
 }
 </style>
